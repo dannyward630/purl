@@ -210,6 +210,16 @@
         "pkg:generic/bitwarderl?vcs_url=git%2Bhttps://git.fsfe.org/dxtr/bitwarderl%40cc55108da32"
       ]
     },
+    "git": {
+      "description": "Git-based source packages",
+      "default_registry": null,
+      "namespace_requirement": "required",
+      "examples": [
+        "pkg:git/codeberg.org/forgejo/forgejo@a72d2c07cfca03b55371089de6aa230d8c951fa0",
+        "pkg:git/projects.blender.org/blender/blender.git",
+        "pkg:git/gitlab.gnome.org/GNOME/adwaita-fonts"
+      ]
+    },
     "github": {
       "description": "GitHub-based packages",
       "default_registry": "https://github.com",
