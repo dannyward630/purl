@@ -6,7 +6,9 @@
 package purl
 
 import (
+	"errors"
 	"sort"
+	"strings"
 
 	packageurl "github.com/package-url/packageurl-go"
 )
@@ -21,6 +23,15 @@ func Parse(s string) (*PURL, error) {
 	p, err := packageurl.FromString(s)
 	if err != nil {
 		return nil, err
+	}
+	if p.Type == ecosystemGit {
+		if p.Namespace == "" {
+			return nil, errors.New("git purl requires a host and repository path")
+		}
+		if host, path, ok := strings.Cut(p.Namespace, "/"); ok {
+			p.Namespace = host
+			p.Name = path + "/" + p.Name
+		}
 	}
 	return &PURL{p}, nil
 }
@@ -51,7 +62,20 @@ func New(purlType, namespace, name, version string, qualifiers map[string]string
 
 // String returns the PURL as a string.
 func (p *PURL) String() string {
-	return p.PackageURL.String()
+	return p.ToString()
+}
+
+// ToString returns the PURL as a string.
+func (p *PURL) ToString() string {
+	components := p.PackageURL
+	if components.Type == ecosystemGit {
+		// Serialize repository path segments without escaping their separators.
+		if i := strings.LastIndexByte(components.Name, '/'); i >= 0 {
+			components.Namespace += "/" + components.Name[:i]
+			components.Name = components.Name[i+1:]
+		}
+	}
+	return components.String()
 }
 
 // RepositoryURL returns the repository_url qualifier value, if present.

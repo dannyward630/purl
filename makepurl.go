@@ -53,10 +53,8 @@ func hasConstraintSyntax(version, scheme string) bool {
 	return false
 }
 
-// BuildPURLString builds a PURL string directly from ecosystem-native identifiers
-// without creating intermediate PURL structs. This is the fast path for manifest
-// parsing where we just need the string output. It returns an empty string when
-// the package identifier cannot be represented as a PURL.
+// BuildPURLString builds a PURL string from ecosystem-native identifiers. It
+// returns an empty string when the identifier cannot be represented as a PURL.
 func BuildPURLString(ecosystem, name, version, registryURL string) string {
 	purlType := EcosystemToPURLType(ecosystem)
 	namespace, pkgName, ok := splitNamespace(ecosystem, name)
@@ -108,6 +106,13 @@ func suppressRepositoryURL(purlType string) bool {
 }
 
 func buildPURLString(purlType, namespace, name, version, registryURL string) string {
+	if purlType == ecosystemGit {
+		p := PURL{packageurl.PackageURL{Type: purlType, Namespace: namespace, Name: name, Version: version}}
+		if registryURL != "" {
+			p.Qualifiers = packageurl.Qualifiers{{Key: "repository_url", Value: registryURL}}
+		}
+		return p.String()
+	}
 	n := len("pkg:") + len(purlType) + escapedNamespaceLength(namespace) + 1 + escapedComponentLength(name)
 	if version != "" {
 		n += 1 + escapedComponentLength(version)
@@ -192,6 +197,11 @@ func splitNamespace(ecosystem, name string) (namespace, pkgName string, ok bool)
 	}
 
 	switch normalized {
+	case ecosystemGit:
+		namespace, pkgName, ok = strings.Cut(name, "/")
+		if !ok || namespace == "" || pkgName == "" || strings.HasSuffix(pkgName, "/") || strings.Contains(name, "//") {
+			return "", "", false
+		}
 	case ecosystemNPM:
 		if strings.HasPrefix(name, "@") {
 			if i := strings.IndexByte(name, '/'); i >= 0 {
