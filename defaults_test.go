@@ -47,6 +47,8 @@ func TestIsDefaultRegistry(t *testing.T) {
 
 		// Types with no default registry
 		{"apk", "https://example.com", false},
+		{"vcpkg", "https://github.com/azure-sdk/vcpkg", false},
+		{"julia", "https://github.com/HolyLab/HolyLabRegistry", false},
 		{"deb", "https://example.com", false},
 
 		// Unknown type
