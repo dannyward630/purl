@@ -85,6 +85,7 @@ func TestBuildPURLString(t *testing.T) {
 		{"golang normalization", "golang", "GitHub.com/Foo/Bar", "v1.0.0", "", "pkg:golang/github.com/foo/bar@v1.0.0"},
 		{"mlflow databricks normalization", "mlflow", "TrafficSigns", "1.0", "https://adb-123.4.azuredatabricks.net/api/2.0/mlflow", "pkg:mlflow/trafficsigns@1.0?repository_url=https:%2F%2Fadb-123.4.azuredatabricks.net%2Fapi%2F2.0%2Fmlflow"},
 		{"mlflow azureml preserves case", "mlflow", "TrafficSigns", "1.0", "https://westus2.api.azureml.ms/mlflow/v1.0", "pkg:mlflow/TrafficSigns@1.0?repository_url=https:%2F%2Fwestus2.api.azureml.ms%2Fmlflow%2Fv1.0"},
+		{"vcpkg github registry", "vcpkg", "zlib", "1.3.1", "https://github.com/azure-sdk/vcpkg", "pkg:vcpkg/zlib@1.3.1?repository_url=https:%2F%2Fgithub.com%2Fazure-sdk%2Fvcpkg"},
 		{"helm https repo", "helm", "postgresql", "12.1.15", "https://charts.bitnami.com/bitnami", "pkg:helm/postgresql@12.1.15"},
 		{"helm oci repo", "helm", "redis", "17.3.7", "oci://registry-1.docker.io/bitnamicharts", "pkg:helm/redis@17.3.7"},
 		{"helm local alias", "helm", "metrics-server", "3.12.2", "@internal", "pkg:helm/metrics-server@3.12.2"},

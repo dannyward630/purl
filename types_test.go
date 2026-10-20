@@ -126,8 +126,8 @@ func TestNamespaceRequirement(t *testing.T) {
 		{"composer", true, false},
 		{"gem", false, true},
 		{"cran", false, true},
-		{"npm", false, false},   // optional
-		{"cargo", false, false}, // no requirement
+		{"npm", false, false}, // optional
+		{"cargo", false, true},
 	}
 
 	for _, tt := range tests {

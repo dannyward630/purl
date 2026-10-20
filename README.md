@@ -46,13 +46,26 @@ fmt.Println(version)  // 1.2.3
 
 ## Type Configuration
 
-Type information comes from an embedded copy of [purl-types.json](https://github.com/andrew/purl/blob/main/purl-types.json) which includes default registries, namespace requirements, and URI templates for registry URL generation.
+Type information is embedded in `types.json`. Type names and namespace requirements are checked against the pinned [purl-spec](https://github.com/package-url/purl-spec) submodule. Default registries and URL templates are maintained locally.
+
+The local types `bioconductor`, `clojars`, `deno`, and `elm` are retained. The legacy `homebrew` type keeps its existing PURLs and registry behavior; use `brew` explicitly for the registered type. Recognition of a type does not imply full support for its normalization or validation rules.
 
 ```go
 purl.KnownTypes()           // []string of all known PURL types
 purl.IsKnownType("npm")     // true
 purl.DefaultRegistry("npm") // https://registry.npmjs.org
 ```
+
+## Development
+
+Initialize the spec submodule before running tests:
+
+```sh
+git submodule update --init
+go test ./...
+```
+
+Dependabot checks for spec updates weekly. The metadata test reports missing types, namespace differences, and unregistered types without a local allowance. Update `types.json` when those checks fail, preserving local registry settings.
 
 ## License
 
