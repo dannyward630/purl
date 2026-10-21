@@ -20,6 +20,7 @@ const (
 	purlTypeGem             = "gem"
 	purlTypeGitHubActions   = "githubactions"
 	purlTypeVSCodeExtension = "vscode-extension"
+	purlTypeBSD             = "bsd"
 )
 
 // purlTypeForEcosystem maps ecosystem names to PURL types.

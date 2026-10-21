@@ -336,3 +336,18 @@ func TestFreeBSDPURL(t *testing.T) {
 		t.Error("bsd type must require a namespace")
 	}
 }
+
+func TestFreeBSDNamespaceCase(t *testing.T) {
+	// The bsd namespace is case-insensitive and lowercased; the name keeps its case.
+	const want = "pkg:bsd/freebsd/p5-Mojolicious@9.39"
+	parsed, err := Parse("pkg:bsd/FreeBSD/p5-Mojolicious@9.39")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := parsed.String(); got != want {
+		t.Errorf("Parse().String() = %q, want %q", got, want)
+	}
+	if got := New("bsd", "FreeBSD", "p5-Mojolicious", "9.39", nil).String(); got != want {
+		t.Errorf("New().String() = %q, want %q", got, want)
+	}
+}
