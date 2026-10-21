@@ -28,6 +28,7 @@ func TestSpecTypeMetadata(t *testing.T) {
 
 	localTypes := map[string]string{
 		"bioconductor": "Bioconductor registry support",
+		"bsd":          "FreeBSD packages, proposed in purl-spec#496",
 		"clojars":      "Clojars registry support",
 		"deno":         "Deno registry support",
 		"elm":          "Elm registry support",

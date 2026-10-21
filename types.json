@@ -62,6 +62,15 @@
         "pkg:brew/go"
       ]
     },
+    "bsd": {
+      "description": "FreeBSD and other BSD operating system packages",
+      "default_registry": null,
+      "namespace_requirement": "required",
+      "examples": [
+        "pkg:bsd/freebsd/emacs@30.1_2?distro=14.3&epoch=3",
+        "pkg:bsd/freebsd/python311@3.11.13?distro=14.3"
+      ]
+    },
     "cargo": {
       "description": "Cargo packages for Rust",
       "default_registry": "https://crates.io",
