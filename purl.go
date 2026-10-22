@@ -40,9 +40,12 @@ func Parse(s string) (*PURL, error) {
 // lowercaseCaseInsensitive lowercases components the spec declares
 // case-insensitive where packageurl-go's Normalize leaves them as given.
 func lowercaseCaseInsensitive(p *packageurl.PackageURL) {
-	if p.Type == purlTypeVSCodeExtension {
+	switch p.Type {
+	case purlTypeVSCodeExtension:
 		p.Namespace = strings.ToLower(p.Namespace)
 		p.Name = strings.ToLower(p.Name)
+	case purlTypeBSD:
+		p.Namespace = strings.ToLower(p.Namespace)
 	}
 }
 

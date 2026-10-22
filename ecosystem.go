@@ -8,6 +8,7 @@ const (
 	ecosystemAlpine         = "alpine"
 	ecosystemArch           = "arch"
 	ecosystemComposer       = "composer"
+	ecosystemFreeBSD        = "freebsd"
 	ecosystemGit            = "git"
 	ecosystemGitHubActions  = "github-actions"
 	ecosystemGolang         = "golang"
@@ -19,6 +20,7 @@ const (
 	purlTypeGem             = "gem"
 	purlTypeGitHubActions   = "githubactions"
 	purlTypeVSCodeExtension = "vscode-extension"
+	purlTypeBSD             = "bsd"
 )
 
 // purlTypeForEcosystem maps ecosystem names to PURL types.
@@ -26,6 +28,7 @@ const (
 var purlTypeForEcosystem = map[string]string{
 	ecosystemAlpine:        "apk",
 	ecosystemArch:          "alpm",
+	ecosystemFreeBSD:       "bsd",
 	ecosystemRubyGems:      purlTypeGem,
 	ecosystemPackagist:     ecosystemComposer,
 	ecosystemGitHubActions: purlTypeGitHubActions,
@@ -72,8 +75,9 @@ var depsdevSystemNames = map[string]string{
 
 // defaultNamespaces defines default namespaces for certain ecosystems.
 var defaultNamespaces = map[string]string{
-	ecosystemAlpine: ecosystemAlpine,
-	ecosystemArch:   ecosystemArch,
+	ecosystemAlpine:  ecosystemAlpine,
+	ecosystemArch:    ecosystemArch,
+	ecosystemFreeBSD: ecosystemFreeBSD,
 }
 
 // NormalizeEcosystem returns the canonical ecosystem name.
@@ -149,6 +153,7 @@ func PURLTypeToDepsdev(purlType string) string {
 //   - composer: vendor/package -> namespace="vendor", name="package"
 //   - alpine: pkg -> namespace="alpine", name="pkg"
 //   - arch: pkg -> namespace="arch", name="pkg"
+//   - freebsd: pkg -> namespace="freebsd", name="pkg"
 //   - swift: host/owner/package -> namespace="host/owner", name="package"
 //
 // Swift registry identities do not contain source repository coordinates and

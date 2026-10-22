@@ -39,6 +39,7 @@ func TestEcosystemToPURLType(t *testing.T) {
 		{"npm", "npm"},
 		{"alpine", "apk"},
 		{"arch", "alpm"},
+		{"freebsd", "bsd"},
 		{"rubygems", "gem"},
 		{"packagist", "composer"},
 		{"cargo", "cargo"},
@@ -65,6 +66,7 @@ func TestPURLTypeToEcosystem(t *testing.T) {
 	}{
 		{"apk", "alpine"},
 		{"alpm", "arch"},
+		{"bsd", "freebsd"},
 		{"gem", "rubygems"},
 		{"composer", "packagist"},
 		{"githubactions", "github-actions"},
@@ -210,6 +212,7 @@ func TestMakePURLString(t *testing.T) {
 		{"alpine default namespace", "alpine", "curl", "8.0.0", "pkg:apk/alpine/curl@8.0.0"},
 		{"alpine default namespace escaping", "alpine", "curl/ssl", "8.0.0-r0", "pkg:apk/alpine/curl%2Fssl@8.0.0-r0"},
 		{"arch default namespace", "arch", "base", "1.0", "pkg:alpm/arch/base@1.0"},
+		{"freebsd default namespace", "freebsd", "py311-requests", "2.32.3_1", "pkg:bsd/freebsd/py311-requests@2.32.3_1"},
 		{"github-actions", "github-actions", "actions/checkout", "v4", "pkg:githubactions/actions/checkout@v4"},
 		{"github-actions path", "github-actions", "actions/cache/restore", "v4", "pkg:githubactions/actions/cache@v4"},
 		{"cargo", "cargo", "serde", "1.0.0", "pkg:cargo/serde@1.0.0"},
@@ -280,7 +283,7 @@ func TestSupportedEcosystems(t *testing.T) {
 		has[e] = true
 	}
 
-	required := []string{"npm", "cargo", "pypi", "maven", "golang", "go", "gem", "alpine"}
+	required := []string{"npm", "cargo", "pypi", "maven", "golang", "go", "gem", "alpine", "freebsd"}
 	for _, r := range required {
 		if !has[r] {
 			t.Errorf("SupportedEcosystems() missing %q", r)
@@ -301,6 +304,7 @@ func TestIsValidEcosystem(t *testing.T) {
 		{"gem", true},
 		{"rubygems", true},
 		{"alpine", true},
+		{"freebsd", true},
 		{"notarealecosystem", false},
 	}
 
@@ -310,5 +314,40 @@ func TestIsValidEcosystem(t *testing.T) {
 				t.Errorf("IsValidEcosystem(%q) = %v, want %v", tt.ecosystem, got, tt.want)
 			}
 		})
+	}
+}
+
+func TestFreeBSDPURL(t *testing.T) {
+	const s = "pkg:bsd/freebsd/emacs@30.1_2?distro=14.3&epoch=3"
+	p, err := Parse(s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p.Type != "bsd" || p.Namespace != "freebsd" || p.Name != "emacs" || p.Version != "30.1_2" {
+		t.Errorf("Parse(%q) = %+v", s, p.PackageURL)
+	}
+	if got := p.String(); got != s {
+		t.Errorf("String() = %q, want %q", got, s)
+	}
+	if got := PURLTypeToEcosystem(p.Type); got != "freebsd" {
+		t.Errorf("PURLTypeToEcosystem(%q) = %q, want freebsd", p.Type, got)
+	}
+	if cfg := TypeInfo("bsd"); cfg == nil || !cfg.NamespaceRequired() {
+		t.Error("bsd type must require a namespace")
+	}
+}
+
+func TestFreeBSDNamespaceCase(t *testing.T) {
+	// The bsd namespace is case-insensitive and lowercased; the name keeps its case.
+	const want = "pkg:bsd/freebsd/p5-Mojolicious@9.39"
+	parsed, err := Parse("pkg:bsd/FreeBSD/p5-Mojolicious@9.39")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := parsed.String(); got != want {
+		t.Errorf("Parse().String() = %q, want %q", got, want)
+	}
+	if got := New("bsd", "FreeBSD", "p5-Mojolicious", "9.39", nil).String(); got != want {
+		t.Errorf("New().String() = %q, want %q", got, want)
 	}
 }
