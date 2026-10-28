@@ -89,7 +89,7 @@ func originalGolangPath(s string) (namespace, name string, err error) {
 		}
 		decoded = append(decoded, segment)
 	}
-	namespace = strings.Trim(strings.Join(decoded, "/"), "/")
+	namespace = strings.Join(decoded, "/")
 	return namespace, name, nil
 }
 
@@ -118,10 +118,10 @@ func lowercaseCaseInsensitive(p *packageurl.PackageURL) {
 
 // New creates a new PURL from components.
 //
-// The result is normalized with the same per-type rules Parse applies. Go
-// module paths retain their case because Go import paths are case-sensitive.
-// Normalization errors are ignored; any adjustments Normalize applied before
-// erroring are kept.
+// The result is normalized with the same per-type rules Parse applies
+// (packageurl-go's Normalize), so New and Parse produce the same string for
+// equivalent inputs. Normalization errors are ignored; any adjustments
+// Normalize applied before erroring are kept.
 func New(purlType, namespace, name, version string, qualifiers map[string]string) *PURL {
 	var q packageurl.Qualifiers
 	if len(qualifiers) > 0 {
