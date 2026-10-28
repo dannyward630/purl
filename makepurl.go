@@ -76,12 +76,10 @@ func BuildPURLString(ecosystem, name, version, registryURL string) string {
 
 // normalizeComponents applies packageurl-go's per-type canonicalization
 // (lowercasing composer names, PyPI underscore-to-dash, etc) so the fast-path
-// string builders agree with Parse. Go module paths are restored after
-// Normalize because Go import paths are case-sensitive. The registryURL is
-// passed as a repository_url qualifier because some types (mlflow) vary name
-// casing by registry. Normalize's error is ignored so the result matches New,
-// which also discards it; whatever fields Normalize wrote before erroring are
-// kept.
+// string builders agree with Parse. The registryURL is passed as a
+// repository_url qualifier because some types (mlflow) vary name casing by
+// registry. Normalize's error is ignored so the result matches New, which also
+// discards it; whatever fields Normalize wrote before erroring are kept.
 func normalizeComponents(purlType, namespace, name, version, registryURL string) (string, string, string) {
 	var q packageurl.Qualifiers
 	if registryURL != "" {
